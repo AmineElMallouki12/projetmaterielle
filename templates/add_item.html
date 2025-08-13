@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %}Add Equipment{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="fw-bold mb-3">
+        <i class="fas fa-plus me-2"></i>Ajouter un équipement
+      </h2>
+      <p class="text-muted">Add a new piece of equipment to your inventory system.</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-box me-2"></i>Equipment Details
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('add_item') }}" id="addItemForm" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label">ID</label>
+              <input type="text" name="id" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Désignation</label>
+              <input type="text" name="designation" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Catégorie</label>
+              <select name="category" class="form-select" required>
+                <option value="">Sélectionner une catégorie...</option>
+                <option value="Station Totale">Station Totale</option>
+                <option value="GNSS/GPS/CARNET">GNSS/GPS/CARNET</option>
+                <option value="Niveau Numerique/Optique">Niveau Numerique/Optique</option>
+                <option value="Scanner Laser">Scanner Laser</option>
+                <option value="Drone a voilure Fixe">Drone a voilure Fixe</option>
+                <option value="Mire de nivelement/Tripier">Mire de nivelement/Tripier</option>
+                <option value="Equipment informatique">Equipment informatique</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Marque</label>
+              <input type="text" name="marque" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Modèle</label>
+              <input type="text" name="modele" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">N° Série</label>
+              <input type="text" name="n_serie" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ancien CAB</label>
+              <input type="text" name="ancien_cab" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nouveau CAB</label>
+              <input type="text" name="nouveau_cab" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Statut</label>
+              <select name="status" class="form-select">
+                <option value="Disponible">Disponible</option>
+                <option value="Indisponible">Indisponible</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date d’inventaire</label>
+              <input type="date" name="date_inv" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description / Observation</label>
+              <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <!-- Quantity Fields -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Quantité Totale</label>
+                  <input type="number" name="quantite_totale" class="form-control" value="1" min="1" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Quantité Cassée</label>
+                  <input type="number" name="quantite_cassée" class="form-control" value="0" min="0">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Quantité en Réparation</label>
+                  <input type="number" name="quantite_en_réparation" class="form-control" value="0" min="0">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Quantité Disponible</label>
+                  <input type="number" class="form-control" id="quantite_disponible" readonly>
+                  <small class="text-muted">Calculé automatiquement</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Image (optionnelle)</label>
+              <input type="file" name="image" class="form-control" accept="image/*">
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-plus me-2"></i>Ajouter
+              </button>
+              <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Annuler
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Calculate available quantity
+function calculateAvailableQuantity() {
+    const total = parseInt(document.querySelector('input[name="quantite_totale"]').value) || 0;
+    const broken = parseInt(document.querySelector('input[name="quantite_cassée"]').value) || 0;
+    const repair = parseInt(document.querySelector('input[name="quantite_en_réparation"]').value) || 0;
+    
+    const available = total - broken - repair;
+    document.getElementById('quantite_disponible').value = Math.max(0, available);
+}
+
+// Add event listeners for quantity fields
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityFields = [
+        'input[name="quantite_totale"]',
+        'input[name="quantite_cassée"]',
+        'input[name="quantite_en_réparation"]'
+    ];
+    
+    quantityFields.forEach(selector => {
+        document.querySelector(selector).addEventListener('input', calculateAvailableQuantity);
+    });
+    
+    // Calculate initial value
+    calculateAvailableQuantity();
+    
+    // Auto-focus on designation field
+    document.querySelector('input[name="designation"]').focus();
+});
+
+// Form validation
+document.getElementById('addItemForm').addEventListener('submit', function(e) {
+    const designation = document.querySelector('input[name="designation"]').value.trim();
+    const quantiteTotale = parseInt(document.querySelector('input[name="quantite_totale"]').value) || 0;
+    const quantiteCassée = parseInt(document.querySelector('input[name="quantite_cassée"]').value) || 0;
+    const quantiteRepair = parseInt(document.querySelector('input[name="quantite_en_réparation"]').value) || 0;
+    
+    if (!designation) {
+        e.preventDefault();
+        showAlert('Veuillez entrer une désignation', 'warning');
+        return false;
+    }
+    
+    if (quantiteTotale < 1) {
+        e.preventDefault();
+        showAlert('La quantité totale doit être au moins 1', 'warning');
+        return false;
+    }
+    
+    if (quantiteCassée < 0 || quantiteRepair < 0) {
+        e.preventDefault();
+        showAlert('Les quantités ne peuvent pas être négatives', 'warning');
+        return false;
+    }
+    
+    if (quantiteCassée + quantiteRepair > quantiteTotale) {
+        e.preventDefault();
+        showAlert('La somme des quantités cassées et en réparation ne peut pas dépasser la quantité totale', 'warning');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Ajout en cours...';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}
