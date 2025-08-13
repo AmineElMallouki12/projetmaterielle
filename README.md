@@ -1,241 +1,215 @@
-# University Inventory Management System
+# 🏢 Système de Gestion d'Inventaire - Flask
 
-A modern, web-based inventory management system designed for universities to track and manage laboratory equipment, tools, and other educational resources.
+Un système complet de gestion d'inventaire développé avec Flask, MongoDB et Bootstrap 5.
 
-## Features
+## ✨ Fonctionnalités
 
-### 🏠 Dashboard
-- Real-time statistics and overview
-- Quick access to all system functions
-- Recent activity tracking
-- Visual status indicators
+- 🔐 **Authentification multi-rôles** (Admin, Technicien, Professeur, Étudiant)
+- 📦 **Gestion d'inventaire** avec catégorisation
+- 📅 **Système de réservations** avec approbation en deux étapes
+- 📊 **Rapports et exports** (PDF, Excel)
+- 🖼️ **Gestion d'images** pour les équipements
+- 📱 **Interface responsive** avec Bootstrap 5
+- 🔍 **Recherche et filtres** avancés
 
-### 📦 Inventory Management
-- Add, edit, and delete equipment
-- Track equipment condition and status
-- Search and filter functionality
-- Bulk operations support
-- Export data in multiple formats (CSV, JSON)
+## 🚀 Installation Rapide
 
-### 📅 Reservation System
-- Create equipment reservations
-- Approval workflow for reservations
-- Calendar-based scheduling
-- Reservation status tracking
-- Conflict detection
+### Prérequis Système
 
-### 📊 Reports & Analytics
-- Comprehensive inventory reports
-- Statistical analysis
-- Usage tracking
-- Export capabilities
-- Visual data representation
+- **Python 3.8+** (recommandé: Python 3.11 ou 3.12)
+- **MongoDB** (version 4.4+ ou 5.0+)
+- **Git** (optionnel, pour cloner le projet)
 
-### 🔐 User Management
-- Role-based access control
-- Secure authentication
-- User session management
-- Admin and staff roles
+### 1. Installation de Python
 
-## Technology Stack
+#### Windows
+```bash
+# Télécharger depuis python.org
+# Ou utiliser winget
+winget install Python.Python.3.11
+```
 
-- **Backend**: Flask (Python)
-- **Database**: MySQL
-- **Frontend**: Bootstrap 5, HTML5, CSS3, JavaScript
-- **Authentication**: Flask-Login, Flask-Bcrypt
-- **Icons**: Font Awesome 6
+#### macOS
+```bash
+# Avec Homebrew
+brew install python@3.11
 
-## Installation
+# Ou télécharger depuis python.org
+```
 
-### Prerequisites
+#### Linux (Ubuntu/Debian)
+```bash
+sudo apt update
+sudo apt install python3.11 python3.11-pip python3.11-venv
+```
 
-1. **Python 3.8+**
-2. **MySQL Server**
-3. **pip** (Python package manager)
+### 2. Installation de MongoDB
 
-### Setup Instructions
+#### Windows
+```bash
+# Télécharger MongoDB Community Server depuis mongodb.com
+# Installer avec l'installateur MSI
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd inventory-management-system
-   ```
+#### macOS
+```bash
+# Avec Homebrew
+brew tap mongodb/brew
+brew install mongodb-community
 
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+# Démarrer MongoDB
+brew services start mongodb-community
+```
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### Linux (Ubuntu)
+```bash
+# Importer la clé publique MongoDB
+wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
 
-4. **Configure MySQL**
-   - Create a new MySQL database named `inventory_db`
-   - Update database configuration in `app.py`:
-     ```python
-     app.config['MYSQL_HOST'] = 'localhost'
-     app.config['MYSQL_USER'] = 'your_username'
-     app.config['MYSQL_PASSWORD'] = 'your_password'
-     app.config['MYSQL_DB'] = 'inventory_db'
-     ```
+# Ajouter le repository MongoDB
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 
-5. **Run the application**
-   ```bash
-   python app.py
-   ```
+# Installer MongoDB
+sudo apt update
+sudo apt install mongodb-org
 
-6. **Access the application**
-   - Open your browser and go to `http://localhost:5000`
-   - Login with default credentials:
-     - Username: `admin`
-     - Password: `admin123`
+# Démarrer MongoDB
+sudo systemctl start mongod
+sudo systemctl enable mongod
+```
 
-## Database Schema
+### 3. Configuration du Projet
 
-### Users Table
-- `id` (Primary Key)
-- `username` (Unique)
-- `password` (Hashed)
-- `role` (admin/staff/teacher)
-- `created_at` (Timestamp)
+```bash
+# 1. Extraire le fichier ZIP dans un dossier
+# 2. Ouvrir un terminal dans ce dossier
+# 3. Créer un environnement virtuel
+python -m venv venv
 
-### Equipment Table
-- `id` (Primary Key)
-- `name` (Equipment name)
-- `condition` (Good/Needs Repair/Bad/Old)
-- `status` (Available/Unavailable)
-- `created_at` (Timestamp)
-- `updated_at` (Timestamp)
+# 4. Activer l'environnement virtuel
+# Windows
+venv\Scripts\activate
 
-### Reservations Table
-- `id` (Primary Key)
-- `item_id` (Foreign Key to equipment)
-- `user_name` (Reserver name)
-- `start_date` (Reservation start)
-- `end_date` (Reservation end)
-- `status` (Pending/Active/Completed/Rejected)
-- `created_at` (Timestamp)
+# macOS/Linux
+source venv/bin/activate
 
-## Usage Guide
+# 5. Installer les dépendances
+pip install -r requirements.txt
+```
 
-### Adding Equipment
-1. Navigate to "Add Equipment" from the dashboard
-2. Fill in equipment details (name, condition, status)
-3. Click "Add Equipment" to save
+### 4. Configuration de la Base de Données
 
-### Managing Inventory
-1. Go to "Inventory" to view all equipment
-2. Use search and filter options to find specific items
-3. Click action buttons to edit, view, reserve, or delete items
+```bash
+# 1. Démarrer MongoDB
+# Windows: MongoDB Compass ou service Windows
+# macOS: brew services start mongodb-community
+# Linux: sudo systemctl start mongod
 
-### Creating Reservations
-1. From inventory or reservations page, click "Make Reservation"
-2. Select equipment, enter dates and user information
-3. Submit the reservation request
-4. Admins can approve/reject pending reservations
+# 2. Créer la base de données et les utilisateurs
+python setup_database.py
+```
 
-### Generating Reports
-1. Navigate to "Reports" section
-2. Select report type (Inventory, Statistics, Reservations)
-3. Choose export format (PDF, CSV, JSON)
-4. Download or view the generated report
+### 5. Lancement de l'Application
 
-## Security Features
+```bash
+# Démarrer l'application
+python app.py
 
-- **Password Hashing**: All passwords are hashed using bcrypt
-- **Session Management**: Secure session handling with Flask-Login
-- **SQL Injection Protection**: Parameterized queries
-- **CSRF Protection**: Built-in Flask CSRF protection
-- **Input Validation**: Server-side validation for all inputs
+# L'application sera accessible sur: http://127.0.0.1:5000
+```
 
-## Customization
+## 📋 Dépendances Python
 
-### Adding New Equipment Types
-1. Modify the condition options in `add_item.html`
-2. Update the database queries in `app.py`
-3. Add corresponding CSS classes in `style.css`
+Le fichier `requirements.txt` contient toutes les dépendances nécessaires :
 
-### Customizing Reports
-1. Edit the report templates in `templates/report.html`
-2. Modify the report generation logic in `app.py`
-3. Add new report types as needed
+- **Flask** - Framework web
+- **Flask-PyMongo** - Intégration MongoDB
+- **Flask-Bcrypt** - Chiffrement des mots de passe
+- **Flask-Login** - Gestion des sessions utilisateur
+- **openpyxl** - Génération de fichiers Excel
+- **reportlab** - Génération de fichiers PDF
+- **Werkzeug** - Utilitaires web
+- **PyMongo** - Driver MongoDB
 
-### Styling Changes
-1. Modify `static/CSS/style.css` for visual changes
-2. Update Bootstrap classes in templates
-3. Add custom JavaScript in `static/JS/script.js`
+## ⚙️ Configuration
 
-## Troubleshooting
+### Variables d'Environnement
 
-### Common Issues
+Créez un fichier `.env` à la racine du projet :
 
-1. **Database Connection Error**
-   - Verify MySQL is running
-   - Check database credentials in `app.py`
-   - Ensure database `inventory_db` exists
+```env
+# Clé secrète Flask (changez-la en production!)
+SECRET_KEY=votre-cle-secrete-tres-longue-et-aleatoire
 
-2. **Import Errors**
-   - Activate virtual environment
-   - Run `pip install -r requirements.txt`
-   - Check Python version (3.8+ required)
+# Configuration MongoDB
+MONGO_URI=mongodb://localhost:27017/inventory_db
 
-3. **Port Already in Use**
-   - Change port in `app.py`: `app.run(debug=True, port=5001)`
-   - Or kill existing process using port 5000
+# Configuration des uploads
+MAX_CONTENT_LENGTH=2097152
+UPLOAD_FOLDER=static/uploads
+```
 
-4. **Permission Errors**
-   - Ensure proper file permissions
-   - Run as administrator if needed (Windows)
+### Structure des Dossiers
 
-### Performance Optimization
+```
+projet_materielle/
+├── app.py                 # Application principale
+├── requirements.txt       # Dépendances Python
+├── setup_database.py      # Script de configuration DB
+├── .env                   # Variables d'environnement
+├── static/                # Fichiers statiques
+│   ├── CSS/              # Styles CSS
+│   ├── JS/               # JavaScript
+│   └── uploads/          # Images uploadées
+├── templates/             # Templates HTML
+└── README.md             # Ce fichier
+```
 
-- Enable MySQL query caching
-- Use database indexes for frequently queried columns
-- Implement pagination for large datasets
-- Optimize image sizes if adding equipment photos
+## 🔧 Dépannage
 
-## Contributing
+### Erreur "MongoDB connection failed"
+- Vérifiez que MongoDB est démarré
+- Vérifiez l'URI de connexion dans `app.py`
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+### Erreur "Module not found"
+- Vérifiez que l'environnement virtuel est activé
+- Réinstallez les dépendances : `pip install -r requirements.txt`
 
-## License
+### Erreur "Permission denied" (Linux/macOS)
+- Vérifiez les permissions du dossier `static/uploads`
+- `chmod 755 static/uploads`
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Port 5000 déjà utilisé
+- Changez le port dans `app.py` : `app.run(port=5001)`
+- Ou tuez le processus : `lsof -ti:5000 | xargs kill -9`
 
-## Support
+## 👥 Utilisateurs par Défaut
 
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation
+Après avoir exécuté `setup_database.py`, vous aurez accès à :
 
-## Future Enhancements
+- **Admin** : `admin` / `admin123`
+- **Technicien** : `technicien` / `tech123`
+- **Professeur** : `professeur` / `prof123`
+- **Étudiant** : `etudiant` / `etud123`
 
-- [ ] Equipment photo upload
-- [ ] QR code generation for equipment
-- [ ] Email notifications for reservations
-- [ ] Mobile app development
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-- [ ] API for third-party integrations
-- [ ] Equipment maintenance scheduling
-- [ ] Barcode scanning functionality
-- [ ] Advanced reporting with charts
+## 📞 Support
+
+Pour toute question ou problème :
+1. Vérifiez ce README
+2. Consultez les logs de l'application
+3. Vérifiez la console du navigateur pour les erreurs JavaScript
+
+## 🚀 Déploiement en Production
+
+⚠️ **ATTENTION** : Ce projet est conçu pour le développement. Pour la production :
+
+- Changez `SECRET_KEY`
+- Utilisez un serveur WSGI (Gunicorn, uWSGI)
+- Configurez un reverse proxy (Nginx, Apache)
+- Activez HTTPS
+- Configurez la journalisation
+- Utilisez une base de données MongoDB sécurisée
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: December 2024  
-**Maintainer**: Development Team 
+**Développé avec ❤️ pour la gestion d'inventaire** 
